@@ -4,111 +4,82 @@
  *
  * @format
  * @flow
+ * @lint-ignore-every XPLATJSCOPYRIGHT1
  */
 
-import React, {Fragment} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import React, {Component} from 'react';
+import {Platform, StyleSheet, Text, View, Dimensions, Button, TouchableHighlight} from 'react-native';
+import { MapView, MapTypes, Geolocation, Overlay } from 'react-native-baidu-map';
+const {height, width} = Dimensions.get('window');
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+type Props = {};
+export default class App extends Component<Props> {
+  state = {
+  };
 
-const App = () => {
-  return (
-    <Fragment>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </Fragment>
-  );
-};
+  render() {
+    const { infoWindowProps } = this.state;
+
+    return (
+  
+      <View style={styles.container}>
+
+         <TouchableHighlight onPress={()=>Geolocation.reverseGeoCode(22.546045,113.960453).
+            then(data => {
+              console.warn('reverseGeoCode',data);
+            })
+            .catch(e =>{
+              console.warn(e, 'error');
+            }) }>
+          <Text style={styles.bigBlue}
+               >Click to get address from latitude and Longitude</Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight onPress={()=>Geolocation.geocode("深圳市","威新软件园").
+            then(data => {
+              console.warn('geocode',data);
+            })
+            .catch(e =>{
+              console.warn(e, 'error');
+            }) }>
+          <Text style={styles.red}
+               >Click to get latitude and Longitude from address</Text>
+          </TouchableHighlight>
+
+        
+        <MapView 
+          width={width} 
+          height={400} 
+          zoom={18}
+          trafficEnabled={true}
+          zoomControlsVisible={true}
+          mapType={MapTypes.SATELLITE}
+          center={{ longitude: 113.960453, latitude: 22.546045 }}
+           
+        >
+        </MapView>
+
+        </View>
+      
+    );
+  }
+}
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
 
-export default App;
+  bigBlue: {
+    color: 'blue',
+    fontWeight: 'bold',
+    fontSize: 20,
+  },
+  red: {
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: 20,
+  }
+});
