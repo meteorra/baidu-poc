@@ -46,6 +46,17 @@ export default class App extends Component<Props> {
                >Click to get latitude and Longitude from address</Text>
           </TouchableHighlight>
 
+          <TouchableHighlight onPress={()=>Geolocation.getCurrentPosition().
+            then(data => {
+              console.warn('getCurrentPosition:',data);
+            })
+            .catch(e =>{
+              console.warn(e, 'error');
+            }) }>
+          <Text style={styles.red}
+               >Click to get current location</Text>
+          </TouchableHighlight>
+
         
         <MapView 
           width={width} 
